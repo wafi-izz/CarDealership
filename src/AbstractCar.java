@@ -5,59 +5,13 @@ import java.util.Scanner;
 
 public class AbstractCar {
     public static void main(String[] args) {
-
-
-
-
         Car car1 = new FourDoorToyota("a");
-        car1.run();
-        System.out.println(car1.toString());
-        car1.stop();
-
-
-        System.out.println("-----------------------");
-
         Car car2 = new TwoDoorToyota("b");
-        car2.accident();
-        car2.repair();
-        car2.run();
-        System.out.println("car price is:" + car1.sell());
-        System.out.println("car price is:" + car2.sell());
-        System.out.println(car2);
 
-        System.out.println("\n=========================================\n");
-
-        Dealer dealer = new Dealer("alex","UK","fancy");
-        dealer.addCar(car1);
-        dealer.addCar(car2);
-        dealer.showAllCars();
-//        dealer.customerMenu();
-        dealer.dealerMenu();
-
-
+        Dealers dealers = new Dealers();
+        dealers.dealersMenu();
     }
 }
-
-
-//class FourDoorToyotaTester extends FourDoorToyota {
-//    public FourDoorToyotaTester(String carName) {
-//        super(carName);
-//    }
-//    @Override
-//    public String toString() {
-//        return "Four Door Toyota Car [ name:" + carName + ", Doors" + numOfDoors + ", max speed/current speed" + maxSpeed +"/"+ currentSpeed +  + " ]";
-//    }
-//}
-//
-//
-//class TwoDoorToyotaTester extends TwoDoorToyota {
-//    public TwoDoorToyotaTester(String carName) {
-//        super(carName);
-//    }
-//}
-
-
-
 
 //Add Sell Function that returns double into Car interface and implement it from the inner classes(calculate price by year mileage and power)
 
@@ -376,12 +330,21 @@ class Dealer {
         carList.add(car);
         System.out.println("car: \n\t[" + car +"]\n has been add to DealerShip ");
     }
+    public void mainMenu() {
+        System.out.println("1 - Dealer's menu: ");
+        System.out.println("2 - Customer's menu: ");
+        System.out.print("witch menu do you want to enter");
+        Scanner sc = new Scanner(System.in);
+        int option = sc.nextInt();
+        if (option == 1) { dealerMenu();}
+        if (option == 2) { customerMenu();}
+    }
     public void customerMenu() {
+        System.out.println("\nــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ");
+        System.out.println("welcome to darrel dealer ship, deals better than the devil's ");
+        System.out.println("ــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ");
+        System.out.println();
         while (true) {
-            System.out.println("\nــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ");
-            System.out.println("welcome to darrel dealer ship, deals better than the devil's ");
-            System.out.println("ــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ");
-            System.out.println();
             printMenu();
             System.out.print("choose your option: ");
             Scanner sc = new Scanner(System.in);
@@ -494,6 +457,7 @@ class Dealer {
             if (car.getCarName().equals(carName)) {
                 System.out.println("congrats , you are the proud owner of: \n\t[" + car + "]");
                 money += car.sell();
+                carList.remove(car);
                 break;
             }
         }
@@ -565,4 +529,158 @@ class Dealer {
         System.out.println("1 - add new Car");
         System.out.println("0 - exit");
     }
+    @Override
+    public String toString() {
+        return "name: " + name + ", location: " + location + ", shop type: " + dealShopType;
+    }
 }
+
+//
+//
+//Create Dealers class and store Dealer arraylist  in it. also there should be dealersMenu() function to run program
+//
+//When I run program I should see an options to see existing dealers or create new dealers. in the Dealer class we already have menu function so when I select existing dealer I need to go in that dealer and work on with that menu. if I exit O should be able to return main Dealers class menu and able to select from the menu again existing dealers create new dealer.
+//
+
+
+class Dealers{
+    Scanner sc = new Scanner(System.in);
+    ArrayList<Dealer> dealerList;
+    public Dealers() {
+        dealerList = new ArrayList<>();
+    }
+    public void dealersMenu() {
+        System.out.println("ــــــــــــــــــــــــــــــ");
+        System.out.println("Welcome to the Dealers Hub");
+        System.out.println("ــــــــــــــــــــــــــــــ");
+        System.out.println();
+        while (true) {
+            System.out.println("1 - Create a New Dealer:");
+            System.out.println("2 - Select a Dealer:");
+            System.out.println("3 - Remove a Dealer:");
+            System.out.println("0 - Exit:");
+            System.out.print("Choose option: ");
+            Scanner sc = new Scanner(System.in);
+            int option = sc.nextInt();
+            switch (option) {
+                case 1:
+                    newDealer();
+                    break;
+                case 2:
+                    viewDealers();
+                    break;
+                case 3:
+                    removeDealer();
+                    break;
+                case 0:
+                    return;
+                default:
+                    System.out.println("Invalid option");
+            }
+        }
+    }
+
+    private void newDealer() {
+        sc = new Scanner(System.in);
+        System.out.print("Dealer's name: ");
+        String name = sc.nextLine();
+        System.out.print("Dealer's location: ");
+        String location = sc.nextLine();
+        System.out.print("Dealer's type: ");
+        String type = sc.nextLine();
+        dealerList.add(new Dealer(name, location, type));
+        System.out.println("Dealer added to the list");
+        System.out.println();
+    }
+
+    private void viewDealers() {
+        int i =1;
+        for (Dealer dealer : dealerList) {
+            System.out.println(i++ + " - " +dealer);
+        }
+        System.out.print("Enter Dealer's number: ");
+        int option = sc.nextInt();
+        if(option==0 || option > dealerList.size()) {
+            System.out.println("dealer is not found");
+            return;
+        }
+        Dealer dealer = dealerList.get(option-1);
+        dealer.mainMenu();
+    }
+
+    private void removeDealer() {
+        int i =1;
+        for (Dealer dealer : dealerList) {
+            System.out.println(i++ + " - " +dealer);
+        }
+        System.out.print("Enter Dealer's number: ");
+        int option = sc.nextInt();
+        Dealer dealer = dealerList.get(option-1);
+        dealerList.remove(dealer);
+        System.out.println("Dealer removed from list");
+        System.out.println();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
